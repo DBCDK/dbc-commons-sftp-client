@@ -69,7 +69,9 @@ public class SFtpClient implements AutoCloseable {
             session.connect();
             channelSftp = (ChannelSftp) session.openChannel("sftp");
             channelSftp.connect();
-            channelSftp.cd(config.getDir());
+            if (config.getDir() != null && !config.getDir().isEmpty()) {
+                channelSftp.cd(config.getDir());
+            }
             LOGGER.info("Connection to '{}' was succesful.", config.getHost());
         } catch (JSchException | SftpException e) {
             throw new SFtpClientException(e);
