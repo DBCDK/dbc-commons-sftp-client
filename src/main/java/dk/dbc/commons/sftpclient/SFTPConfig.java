@@ -5,7 +5,7 @@ public class SFTPConfig {
     private int port;
     private String username;
     private String password;
-    private String dir;
+    private String dir = ".";
     private String filesPattern;
 
     public String getHost() {

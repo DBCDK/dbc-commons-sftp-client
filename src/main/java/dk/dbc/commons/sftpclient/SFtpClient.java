@@ -40,12 +40,16 @@ public class SFtpClient implements AutoCloseable {
     }
 
     public SFtpClient(SFTPConfig config, ProxySOCKS5 proxyHandlerBean, List<String> nonProxiedHosts)  {
+
         LOGGER.info("Trying to connect to '{}' at port '{}' with user '{}' at path '{}'",
                 config.getHost(),
                 config.getPort(),
                 config.getUsername(),
                 config.getDir());
-        boolean isProxied = nonProxiedHosts.stream().noneMatch(domain -> config.getHost().endsWith(domain));
+
+        boolean isProxied = nonProxiedHosts.stream()
+                .filter(domain -> !domain.isEmpty())
+                .noneMatch(domain -> config.getHost().endsWith(domain));
         if (isProxied) {
             this.proxyHandlerBean = proxyHandlerBean;
         } else {

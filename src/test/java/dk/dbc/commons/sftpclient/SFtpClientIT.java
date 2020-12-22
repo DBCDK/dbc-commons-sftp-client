@@ -56,8 +56,7 @@ public class SFtpClientIT extends ContainerTest {
                         .withHost(SFTP_HOST)
                         .withPort(SFTP_PORT)
                         .withUsername(SFTP_USER)
-                        .withPassword(SFTP_PASSWORD)
-                        .withDir("."),
+                        .withPassword(SFTP_PASSWORD),
                 proxySOCKS5Config,
                 Arrays.asList("first.inhouse.domain.dk", "inhouse.dk", "some.other.inhouse.domain.dk"));
     }
