@@ -48,7 +48,7 @@ public class SFtpClient implements AutoCloseable {
                 config.getDir());
 
         boolean isProxied = nonProxiedHosts.stream()
-                .filter(domain -> !domain.isEmpty())
+                .filter(domain -> domain !=null && !domain.isEmpty())
                 .noneMatch(domain -> config.getHost().endsWith(domain));
         if (isProxied) {
             this.proxyHandlerBean = proxyHandlerBean;
