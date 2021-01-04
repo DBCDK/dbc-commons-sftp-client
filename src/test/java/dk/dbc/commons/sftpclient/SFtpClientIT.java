@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class SFtpClientIT extends ContainerTest {
@@ -21,6 +22,7 @@ public class SFtpClientIT extends ContainerTest {
     @Test
     public void check_connection_through_proxy() {
         try (SFtpClient client = getClient()) {
+            assertThat("Client connected through proxy", client, notNullValue());
             LOGGER.info("Succesfully connected to '{}' through proxy '{}'", SFTP_HOST, PROXY_HOST);
         }
     }
@@ -28,6 +30,7 @@ public class SFtpClientIT extends ContainerTest {
     @Test
     public void test_no_dir_specified() {
         try (SFtpClient client = getClient()) {
+            assertThat("Client connected through proxy", client, notNullValue());
             client.ls("*");
         }
     }
