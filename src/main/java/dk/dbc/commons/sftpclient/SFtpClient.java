@@ -40,12 +40,16 @@ public class SFtpClient implements AutoCloseable {
     }
 
     public SFtpClient(SFTPConfig config, ProxySOCKS5 proxyHandlerBean, List<String> nonProxiedHosts)  {
+
         LOGGER.info("Trying to connect to '{}' at port '{}' with user '{}' at path '{}'",
                 config.getHost(),
                 config.getPort(),
                 config.getUsername(),
                 config.getDir());
-        boolean isProxied = nonProxiedHosts.stream().noneMatch(domain -> config.getHost().endsWith(domain));
+
+        boolean isProxied = nonProxiedHosts.stream()
+                .filter(domain -> domain !=null && !domain.isEmpty())
+                .noneMatch(domain -> config.getHost().endsWith(domain));
         if (isProxied) {
             this.proxyHandlerBean = proxyHandlerBean;
         } else {
@@ -69,7 +73,9 @@ public class SFtpClient implements AutoCloseable {
             session.connect();
             channelSftp = (ChannelSftp) session.openChannel("sftp");
             channelSftp.connect();
-            channelSftp.cd(config.getDir());
+            if (config.getDir() != null && !config.getDir().isEmpty()) {
+                channelSftp.cd(config.getDir());
+            }
             LOGGER.info("Connection to '{}' was succesful.", config.getHost());
         } catch (JSchException | SftpException e) {
             throw new SFtpClientException(e);
