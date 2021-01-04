@@ -36,7 +36,8 @@ public class ContainerTest {
                 .withExposedPorts(1080)
                 .withEnv("USERNAME", PROXY_USER)
                 .withEnv("PASSWORD", PROXY_PASSWORD)
-                .waitingFor(Wait.forLogMessage("^.*v1.4.2 running.*$", 5))
+                // Wait for 5 threads logging somehing like: "v1.4.2 running."
+                .waitingFor(Wait.forLogMessage("^.*v\\d+(\\.\\d+)+ running.*$", 5))
                 .withStartupTimeout(Duration.ofMinutes(1));
 
         sftpServer.start();
