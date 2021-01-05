@@ -1,6 +1,7 @@
 package dk.dbc.commons.sftpclient;
 
 import com.jcraft.jsch.ProxySOCKS5;
+import com.jcraft.jsch.SftpException;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.fail;
 
 public class SFtpClientIT extends ContainerTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(SFtpClientIT.class);
@@ -22,16 +24,18 @@ public class SFtpClientIT extends ContainerTest {
     @Test
     public void check_connection_through_proxy() {
         try (SFtpClient client = getClient()) {
-            assertThat("Client connected through proxy", client, notNullValue());
             LOGGER.info("Succesfully connected to '{}' through proxy '{}'", SFTP_HOST, PROXY_HOST);
+        } catch (SFtpClientException e) {
+            fail("Client did NOT succeed connecting to sftpserver through proxy");
         }
     }
 
     @Test
     public void test_no_dir_specified() {
         try (SFtpClient client = getClient()) {
-            assertThat("Client connected through proxy", client, notNullValue());
             client.ls("*");
+        } catch (SFtpClientException e) {
+            fail("ls failed. Probably due to no dir specified for sftpclient.");
         }
     }
 
