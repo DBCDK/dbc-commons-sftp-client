@@ -1,7 +1,6 @@
 package dk.dbc.commons.sftpclient;
 
 import com.jcraft.jsch.ProxySOCKS5;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +20,7 @@ import static org.junit.Assert.fail;
 public class SFtpClientIT extends ContainerTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(SFtpClientIT.class);
 
-    @Test @Ignore
+    @Test
     public void check_connection_through_proxy() {
         try (SFtpClient client = getClient()) {
             LOGGER.info("Succesfully connected to '{}' through proxy '{}'", SFTP_HOST, PROXY_HOST);
@@ -30,7 +29,7 @@ public class SFtpClientIT extends ContainerTest {
         }
     }
 
-    @Test @Ignore
+    @Test
     public void test_no_dir_specified() {
         try (SFtpClient client = getClient()) {
             client.ls("*");
@@ -39,7 +38,7 @@ public class SFtpClientIT extends ContainerTest {
         }
     }
 
-    @Test @Ignore
+    @Test
     public void test_simple_put_and_get() {
         String someFilesBytes = "test get and put";
         String myTestFile = "myTestFile.txt";

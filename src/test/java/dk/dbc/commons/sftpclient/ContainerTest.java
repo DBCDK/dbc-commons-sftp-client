@@ -1,10 +1,12 @@
 package dk.dbc.commons.sftpclient;
-import java.time.Duration;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.Wait;
+
+import java.time.Duration;
 
 public class ContainerTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(ContainerTest.class);
@@ -19,10 +21,11 @@ public class ContainerTest {
     protected static final String SFTP_DIR = "upload";
     protected static final String PROXY_USER = "socksuser";
     protected static final String PROXY_PASSWORD = "sockspassword";
+    private static final String DOCKER_HOST= "docker-metascrum.artifacts.dbccloud.dk";
 
     static {
         Network network = Network.newNetwork();
-        sftpServer = new GenericContainer("docker.dbc.dk/simplesftpserver:latest")
+        sftpServer = new GenericContainer(DOCKER_HOST + "/simplesftpserver:latest")
                 .withNetwork(network)
                 .withNetworkAliases("sftp")
                 .withExposedPorts(22)
@@ -30,7 +33,7 @@ public class ContainerTest {
                 .waitingFor(Wait.forLogMessage("^Server listening on.*", 2))
                 .withStartupTimeout(Duration.ofMinutes(1));
 
-        socks5Proxy = new GenericContainer("docker.dbc.dk/socks5proxy:latest")
+        socks5Proxy = new GenericContainer(DOCKER_HOST + "/socks5proxy:latest")
                 .withNetwork(network)
                 .withNetworkAliases("proxy")
                 .withExposedPorts(1080)
