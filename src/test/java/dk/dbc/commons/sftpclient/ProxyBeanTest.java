@@ -1,10 +1,11 @@
 package dk.dbc.commons.sftpclient;
 
 import com.jcraft.jsch.ProxySOCKS5;
+import org.junit.Test;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -27,7 +28,7 @@ public class ProxyBeanTest {
                 new SFTPConfig().withHost("my_inside_test_host.inhouse.dk"),
                 proxyHandlerBean, Arrays.asList("first.inhouse.domain.dk", "inhouse.dk", "some.other.inhouse.domain.dk"));
 
-        assertThat("NOT Proxy'ing", sftpClient.proxyHandlerBean, nullValue());
+        assertThat("NOT Proxy'ing", sftpClient.proxy, nullValue());
     }
 
     @Test
@@ -37,7 +38,7 @@ public class ProxyBeanTest {
                 new SFTPConfig().withHost("outofthehouse_test_host.outofthehouse.dk"),
                 proxyHandlerBean, Arrays.asList("first.inhouse.domain.dk", "inhouse.dk", "some.other.inhouse.domain.dk"));
 
-        assertThat("Proxy'ing", sftpClient.proxyHandlerBean, notNullValue());
+        assertThat("Proxy'ing", sftpClient.proxy, notNullValue());
     }
 
     @Test
@@ -47,6 +48,6 @@ public class ProxyBeanTest {
                 new SFTPConfig().withHost("my_inside_test_host.inhouse.dk"),
                 proxyHandlerBean, Collections.EMPTY_LIST);
 
-        assertThat("Proxy'ing", sftpClient.proxyHandlerBean, notNullValue());
+        assertThat("Proxy'ing", sftpClient.proxy, notNullValue());
     }
 }

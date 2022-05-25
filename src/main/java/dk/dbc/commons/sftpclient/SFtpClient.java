@@ -3,23 +3,23 @@ package dk.dbc.commons.sftpclient;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.ProxySOCKS5;
+import com.jcraft.jsch.Proxy;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SFtpClient implements AutoCloseable {
     private static final Logger LOGGER = LoggerFactory.getLogger(
             SFtpClient.class);
     private Session session = null;
     private ChannelSftp channelSftp = null;
-    ProxySOCKS5 proxyHandlerBean = null;
-    SFTPConfig config = null;
+    Proxy proxy;
+    SFTPConfig config;
     private static final JSch jsch = new JSch();
     private static final Properties jschConfig = new Properties();
 
@@ -27,19 +27,19 @@ public class SFtpClient implements AutoCloseable {
         jschConfig.setProperty("StrictHostKeyChecking", "no");
     }
 
-    public SFtpClient(SFTPConfig config, ProxySOCKS5 proxyHandlerBean)  {
+    public SFtpClient(SFTPConfig config, Proxy proxy)  {
 
         LOGGER.info("Trying to connect to '{}' at port '{}' with user '{}' at path '{}'",
                 config.getHost(),
                 config.getPort(),
                 config.getUsername(),
                 config.getDir());
-        this.proxyHandlerBean = proxyHandlerBean;
+        this.proxy = proxy;
         this.config = config;
         connect();
     }
 
-    public SFtpClient(SFTPConfig config, ProxySOCKS5 proxyHandlerBean, List<String> nonProxiedHosts)  {
+    public SFtpClient(SFTPConfig config, Proxy proxy, List<String> nonProxiedHosts)  {
 
         LOGGER.info("Trying to connect to '{}' at port '{}' with user '{}' at path '{}'",
                 config.getHost(),
@@ -51,9 +51,9 @@ public class SFtpClient implements AutoCloseable {
                 .filter(domain -> domain !=null && !domain.isEmpty())
                 .noneMatch(domain -> config.getHost().endsWith(domain));
         if (isProxied) {
-            this.proxyHandlerBean = proxyHandlerBean;
+            this.proxy = proxy;
         } else {
-            this.proxyHandlerBean = null;
+            this.proxy = null;
         }
 
         this.config = config;
@@ -65,8 +65,8 @@ public class SFtpClient implements AutoCloseable {
     void connect() {
         try {
             session = jsch.getSession(config.getUsername(), config.getHost(), config.getPort());
-            if (proxyHandlerBean != null) {
-                session.setProxy(proxyHandlerBean);
+            if (proxy != null) {
+                session.setProxy(proxy);
             }
             session.setPassword(config.getPassword());
             session.setConfig(jschConfig);
@@ -103,11 +103,11 @@ public class SFtpClient implements AutoCloseable {
         }
     }
 
-    public Vector<ChannelSftp.LsEntry> ls(String pattern) {
+    public List<ChannelSftp.LsEntry> ls(String pattern) {
         verifyConnection();
         try {
-            Vector files = channelSftp.ls(pattern);
-            return files;
+            //noinspection unchecked
+            return channelSftp.ls(pattern);
         } catch (SftpException e) {
             throw new SFtpClientException(e);
         }

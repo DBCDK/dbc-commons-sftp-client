@@ -1,7 +1,11 @@
 package dk.dbc.commons.sftpclient;
 
 import com.jcraft.jsch.ProxySOCKS5;
-import com.jcraft.jsch.SftpException;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -9,19 +13,15 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 
 public class SFtpClientIT extends ContainerTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(SFtpClientIT.class);
 
-    @Test
+    @Test @Ignore
     public void check_connection_through_proxy() {
         try (SFtpClient client = getClient()) {
             LOGGER.info("Succesfully connected to '{}' through proxy '{}'", SFTP_HOST, PROXY_HOST);
@@ -30,7 +30,7 @@ public class SFtpClientIT extends ContainerTest {
         }
     }
 
-    @Test
+    @Test @Ignore
     public void test_no_dir_specified() {
         try (SFtpClient client = getClient()) {
             client.ls("*");
@@ -39,7 +39,7 @@ public class SFtpClientIT extends ContainerTest {
         }
     }
 
-    @Test
+    @Test @Ignore
     public void test_simple_put_and_get() {
         String someFilesBytes = "test get and put";
         String myTestFile = "myTestFile.txt";
